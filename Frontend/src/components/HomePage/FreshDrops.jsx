@@ -5,28 +5,6 @@ import "./FreshDrops.css";
 
 function FreshDrops() {
   const [products, setProducts] = useState([]);
-  const [touchStart, setTouchStart] = useState(0);
-  const [touchEnd, setTouchEnd] = useState(0);
-
-  const handleTouchStart = (e) => {
-    setTouchStart(e.touches[0].clientX);
-  };
-
-  const handleTouchMove = (e) => {
-    setTouchEnd(e.touches[0].clientX);
-  };
-
-  const handleTouchEnd = () => {
-    const distance = touchStart - touchEnd;
-
-    if (distance > 50) {
-      nextSlide();
-    }
-
-    if (distance < -50) {
-      prevSlide();
-    }
-  };
 
   useEffect(() => {
     axios
@@ -39,17 +17,14 @@ function FreshDrops() {
       });
   }, []);
 
-  const [position, setPosition] = useState(0);
+  const scrollProducts = (direction) => {
+    const container = document.querySelector(".products-window");
 
-  const nextSlide = () => {
-    if (position < products.length - 4) {
-      setPosition(position + 1);
-    }
-  };
-
-  const prevSlide = () => {
-    if (position > 0) {
-      setPosition(position - 1);
+    if (container) {
+      container.scrollBy({
+        left: direction === "next" ? 320 : -320,
+        behavior: "smooth",
+      });
     }
   };
 
@@ -60,32 +35,26 @@ function FreshDrops() {
       <div className="products-wrapper">
         <button
           className="slider-btn left"
-          onClick={prevSlide}
-          disabled={position === 0}
+          onClick={() => scrollProducts("prev")}
+          aria-label="Previous products"
         >
           ‹
         </button>
 
-        <div
-          className="products-window"
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
-        >
-          <div
-            className="products-track"
-            style={{
-              transform: `translateX(-${position * 25}%)`,
-            }}
-          >
-            {products.map((product, index) => (
+        <div className="products-window">
+          <div className="products-track">
+            {products.map((product) => (
               <Link
                 to={`/product/${product._id}`}
                 className="product-card"
                 key={product._id}
               >
                 <div className="product-image">
-                  <img src={product.images[0]} alt={product.name} />
+                  <img
+                    src={product.images[0]}
+                    alt={product.name}
+                    loading="lazy"
+                  />
                 </div>
 
                 <div className="product-info">
@@ -94,7 +63,9 @@ function FreshDrops() {
                   <p className="category">{product.category}</p>
 
                   <div className="price">
-                    <span>₹{product.price.toLocaleString("en-IN")}</span>
+                    <span>
+                      ₹{product.price.toLocaleString("en-IN")}
+                    </span>
 
                     {product.oldPrice && (
                       <span className="old-price">
@@ -102,7 +73,9 @@ function FreshDrops() {
                       </span>
                     )}
 
-                    {product.oldPrice && <span className="discount">20%</span>}
+                    {product.oldPrice && (
+                      <span className="discount">20%</span>
+                    )}
                   </div>
                 </div>
               </Link>
@@ -112,8 +85,8 @@ function FreshDrops() {
 
         <button
           className="slider-btn right"
-          onClick={nextSlide}
-          disabled={position === products.length - 3}
+          onClick={() => scrollProducts("next")}
+          aria-label="Next products"
         >
           ›
         </button>

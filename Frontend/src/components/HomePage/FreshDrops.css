@@ -1,3 +1,4 @@
+
 .fresh-drops {
   padding: 35px 0 70px;
   background: white;
@@ -22,13 +23,21 @@
 
 .products-window {
   width: 100%;
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.products-window::-webkit-scrollbar {
+  display: none;
 }
 
 .products-track {
   display: flex;
   gap: 15px;
-  transition: transform 0.45s ease;
+  width: max-content;
 }
 
 /* =========================
@@ -36,7 +45,7 @@
 ========================= */
 
 .product-card {
-  flex: 0 0 calc(25% - 12px);
+  flex: 0 0 calc((100vw - 106px - 45px) / 4);
   min-width: 0;
   text-decoration: none;
   color: inherit;
@@ -127,11 +136,6 @@
   background: #f2f2f2;
 }
 
-.slider-btn:disabled {
-  opacity: 0.5;
-  cursor: default;
-}
-
 .slider-btn.left {
   left: 22px;
 }
@@ -139,7 +143,6 @@
 .slider-btn.right {
   right: 22px;
 }
-
 
 /* =========================
    TABLET
@@ -165,7 +168,7 @@
   }
 
   .product-card {
-    flex: 0 0 calc(33.333% - 10px);
+    flex: 0 0 calc((100vw - 60px - 30px) / 3);
   }
 
   .product-info {
@@ -196,7 +199,6 @@
   }
 }
 
-
 /* =========================
    MOBILE
 ========================= */
@@ -213,20 +215,32 @@
   }
 
   .products-wrapper {
-    padding: 0 20px;
+    padding: 0;
   }
 
   .products-window {
-    overflow: hidden;
-    touch-action: pan-y;
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-x;
+  }
+
+  .products-window::-webkit-scrollbar {
+    display: none;
   }
 
   .products-track {
     gap: 12px;
+    width: max-content;
+    padding: 0 20px;
   }
 
   .product-card {
-    flex: 0 0 calc(50% - 6px);
+    /* 2 shoes visible */
+    flex: 0 0 calc((100vw - 52px) / 2);
   }
 
   .product-info {
@@ -248,12 +262,11 @@
     flex-wrap: wrap;
   }
 
-  /* Mobile: use finger swipe instead */
+  /* Mobile par arrows nahi */
   .slider-btn {
     display: none;
   }
 }
-
 
 /* =========================
    SMALL MOBILE
@@ -269,16 +282,13 @@
     margin-left: 15px;
   }
 
-  .products-wrapper {
+  .products-track {
+    gap: 10px;
     padding: 0 15px;
   }
 
-  .products-track {
-    gap: 10px;
-  }
-
   .product-card {
-    flex: 0 0 calc(50% - 5px);
+    flex: 0 0 calc((100vw - 40px) / 2);
   }
 
   .product-info h3 {
@@ -290,3 +300,4 @@
     font-size: 12px;
   }
 }
+
