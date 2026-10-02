@@ -10,6 +10,7 @@ const jwt = require("jsonwebtoken");
 const Order = require("./models/Order");
 const authMiddleware = require("./middleware/authMiddleware");
 const adminMiddleware = require("./middleware/adminMiddleware");
+const upload = require("./middleware/upload");
 
 const Product = require("./models/Product");
 
@@ -410,14 +411,18 @@ app.post(
   "/api/admin/products",
   authMiddleware,
   adminMiddleware,
+  upload.array("images", 8),
   async (req, res) => {
     try {
+      console.log("🔥 ADD PRODUCT ROUTE HIT");
+      console.log("BODY:", req.body);
+      console.log("FILES:", req.files);
+
       const {
         name,
         category,
         price,
         oldPrice,
-        images,
         description,
         colors,
         sizes,
@@ -428,30 +433,54 @@ app.post(
       const product = await Product.create({
         name,
         category,
-        price,
-        oldPrice,
-        images,
+        price: Number(price),
+        oldPrice: Number(oldPrice),
+        images: req.files.map((file) => file.path),
         description,
-        colors,
-        sizes,
+        colors: JSON.parse(colors || "[]"),
+        sizes: JSON.parse(sizes || "[]"),
         gender,
-        stock,
+        stock: Number(stock),
       });
+
+      console.log("✅ PRODUCT CREATED:", product._id);
 
       res.status(201).json({
         message: "Product added successfully",
         product,
       });
     } catch (error) {
-      console.log("Add product error:", error);
+      console.error("❌ ADD PRODUCT ERROR:");
+      console.error(error);
+      console.error("MESSAGE:", error?.message);
+      console.error("STACK:", error?.stack);
 
       res.status(500).json({
-        message: "Failed to add product",
+        message: error?.message || "Failed to add product",
       });
     }
   }
 );
 
-app.listen(5000, () => {
-  console.log("Server running on port 5000");
+// tumhare saare routes...
+
+app.use((err, req, res, next) => {
+  console.error("🔥 MIDDLEWARE ERROR:");
+  console.error(err);
+  console.error("MESSAGE:", err?.message);
+  console.error("STACK:", err?.stack);
+
+  res.status(500).json({
+    message: err?.message || "Middleware error",
+  });
+});
+
+app.listen(process.env.PORT || 5000, () => {
+  console.log(`Server running on port ${process.env.PORT || 5000}`);
+});
+
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server running on port ${PORT}`);
 });

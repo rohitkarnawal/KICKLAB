@@ -17,17 +17,13 @@ function Admin() {
     category: "Men's Shoes",
     price: "",
     oldPrice: "",
-    images: [""],
+    images: [],
     description: "",
     colors: [""],
     sizes: ["7", "8", "9", "10"],
     gender: "Men",
     stock: "",
   });
-
-  /* =========================
-     FETCH ORDERS + PRODUCTS
-  ========================= */
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -38,12 +34,8 @@ function Admin() {
           Authorization: `Bearer ${token}`,
         },
       })
-      .then((response) => {
-        setOrders(response.data);
-      })
-      .catch((error) => {
-        console.log("Admin orders error:", error);
-      });
+      .then((response) => setOrders(response.data))
+      .catch((error) => console.log("Admin orders error:", error));
 
     axios
       .get(`${import.meta.env.VITE_API_URL}/api/admin/products`, {
@@ -51,17 +43,9 @@ function Admin() {
           Authorization: `Bearer ${token}`,
         },
       })
-      .then((response) => {
-        setProducts(response.data);
-      })
-      .catch((error) => {
-        console.log("Admin products error:", error);
-      });
+      .then((response) => setProducts(response.data))
+      .catch((error) => console.log("Admin products error:", error));
   }, []);
-
-  /* =========================
-     ADMIN AUTHORIZATION
-  ========================= */
 
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
@@ -90,28 +74,35 @@ function Admin() {
     return null;
   }
 
-  /* =========================
-     ADD PRODUCT
-  ========================= */
-
   const handleAddProduct = async () => {
     try {
       const token = localStorage.getItem("token");
 
+      if (!newProduct.images.length) {
+        alert("Please select at least one product image");
+        return;
+      }
+
+      const formData = new FormData();
+
+      formData.append("name", newProduct.name);
+      formData.append("category", newProduct.category);
+      formData.append("price", Number(newProduct.price));
+      formData.append("oldPrice", Number(newProduct.oldPrice));
+      formData.append("description", newProduct.description);
+      formData.append("gender", newProduct.gender);
+      formData.append("stock", Number(newProduct.stock));
+
+      formData.append("colors", JSON.stringify(newProduct.colors));
+      formData.append("sizes", JSON.stringify(newProduct.sizes));
+
+      newProduct.images.forEach((image) => {
+        formData.append("images", image);
+      });
+
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/api/admin/products`,
-        {
-          name: newProduct.name,
-          category: newProduct.category,
-          price: Number(newProduct.price),
-          oldPrice: Number(newProduct.oldPrice),
-          images: newProduct.images,
-          description: newProduct.description,
-          colors: newProduct.colors,
-          sizes: newProduct.sizes,
-          gender: newProduct.gender,
-          stock: Number(newProduct.stock),
-        },
+        formData,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -131,7 +122,7 @@ function Admin() {
         category: "Men's Shoes",
         price: "",
         oldPrice: "",
-        images: [""],
+        images: [],
         description: "",
         colors: [""],
         sizes: ["7", "8", "9", "10"],
@@ -142,13 +133,11 @@ function Admin() {
       alert("Product added successfully!");
     } catch (error) {
       console.log("Add product error:", error);
-      alert("Failed to add product");
+      alert(
+        error.response?.data?.message || "Failed to add product"
+      );
     }
   };
-
-  /* =========================
-     UPDATE PRODUCT
-  ========================= */
 
   const handleUpdateProduct = async () => {
     try {
@@ -184,10 +173,6 @@ function Admin() {
     }
   };
 
-  /* =========================
-     DELETE PRODUCT
-  ========================= */
-
   const handleDeleteProduct = async (product) => {
     const confirmed = window.confirm(
       `Are you sure you want to delete ${product.name}?`
@@ -215,10 +200,6 @@ function Admin() {
       alert("Failed to delete product");
     }
   };
-
-  /* =========================
-     UPDATE ORDER STATUS
-  ========================= */
 
   const handleOrderStatusChange = async (order, newStatus) => {
     try {
@@ -248,10 +229,6 @@ function Admin() {
       alert("Failed to update order status");
     }
   };
-
-  /* =========================
-     DELETE ORDER
-  ========================= */
 
   const handleDeleteOrder = async (order) => {
     const confirmed = window.confirm(
@@ -297,10 +274,6 @@ function Admin() {
       <div className="admin-page">
         <h1>Admin Dashboard</h1>
 
-        {/* =========================
-            STATS
-        ========================= */}
-
         <div className="admin-stats">
           <div className="admin-stat">
             <span>Total Orders</span>
@@ -329,10 +302,6 @@ function Admin() {
             </strong>
           </div>
         </div>
-
-        {/* =========================
-            ORDERS
-        ========================= */}
 
         <div className="admin-orders">
           <h2>Recent Orders</h2>
@@ -368,8 +337,6 @@ function Admin() {
                       "en-IN"
                     )}
                   </p>
-
-                  {/* CUSTOM STATUS DROPDOWN */}
 
                   <div className="status-dropdown">
                     <button
@@ -412,7 +379,6 @@ function Admin() {
                                 order,
                                 status
                               );
-
                               setOpenStatusId(null);
                             }}
                           >
@@ -422,8 +388,6 @@ function Admin() {
                       </div>
                     )}
                   </div>
-
-                  {/* DELETE ORDER */}
 
                   <button
                     type="button"
@@ -439,10 +403,6 @@ function Admin() {
             ))
           )}
         </div>
-
-        {/* =========================
-            PRODUCTS
-        ========================= */}
 
         <div className="admin-products">
           <div className="products-heading">
@@ -472,7 +432,6 @@ function Admin() {
 
                   <div className="admin-product-info">
                     <h3>{product.name}</h3>
-
                     <p>{product.category}</p>
 
                     <p>
@@ -508,10 +467,6 @@ function Admin() {
           )}
         </div>
       </div>
-
-      {/* =========================
-          ADD PRODUCT MODAL
-      ========================= */}
 
       {showAddProduct && (
         <div className="admin-modal-overlay">
@@ -578,17 +533,34 @@ function Admin() {
                 }
               />
 
-              <input
-                type="text"
-                placeholder="Image URL / Path"
-                value={newProduct.images[0]}
-                onChange={(e) =>
-                  setNewProduct({
-                    ...newProduct,
-                    images: [e.target.value],
-                  })
-                }
-              />
+              <div className="product-image-upload">
+                <label htmlFor="product-images">
+                  Product Images
+                </label>
+
+                <input
+                  id="product-images"
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={(e) =>
+                    setNewProduct({
+                      ...newProduct,
+                      images: Array.from(e.target.files),
+                    })
+                  }
+                />
+
+                {newProduct.images.length > 0 && (
+                  <p>
+                    {newProduct.images.length} image
+                    {newProduct.images.length > 1
+                      ? "s"
+                      : ""}{" "}
+                    selected
+                  </p>
+                )}
+              </div>
 
               <input
                 type="text"
@@ -643,10 +615,6 @@ function Admin() {
           </div>
         </div>
       )}
-
-      {/* =========================
-          EDIT PRODUCT MODAL
-      ========================= */}
 
       {editingProduct && (
         <div className="admin-modal-overlay">
