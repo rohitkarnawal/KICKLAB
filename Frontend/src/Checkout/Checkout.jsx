@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./Checkout.css";
 import Navbar from "../Navbar";
 import AnnouncementBar from "../AnnouncementBar";
@@ -18,7 +18,18 @@ function Checkout() {
     pincode: "",
   });
 
-  const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const total = cart.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  );
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      window.dispatchEvent(new Event("openLoginModal"));
+    }
+  }, []);
 
   const handleChange = (e) => {
     setAddress({
@@ -29,6 +40,14 @@ function Checkout() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const token = localStorage.getItem("token");
+
+    // User login nahi hai
+    if (!token) {
+      window.dispatchEvent(new Event("openLoginModal"));
+      return;
+    }
 
     try {
       const orderData = {
@@ -42,9 +61,9 @@ function Checkout() {
         orderData,
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${token}`,
           },
-        },
+        }
       );
 
       console.log("Order:", response.data);
@@ -56,7 +75,18 @@ function Checkout() {
       window.location.href = "/products";
     } catch (error) {
       console.log("Order error:", error);
-      alert("Failed to place order");
+
+      if (error.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+
+        window.dispatchEvent(new Event("openLoginModal"));
+        return;
+      }
+
+      alert(
+        error.response?.data?.message || "Failed to place order"
+      );
     }
   };
 

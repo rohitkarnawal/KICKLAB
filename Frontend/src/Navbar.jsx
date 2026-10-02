@@ -41,6 +41,18 @@ function Navbar() {
     };
   }, []);
 
+  useEffect(() => {
+  const openLoginModal = () => {
+    setAuthModal("login");
+  };
+
+  window.addEventListener("openLoginModal", openLoginModal);
+
+  return () => {
+    window.removeEventListener("openLoginModal", openLoginModal);
+  };
+}, []);
+
   return (
     <>
       {/* Top links */}
