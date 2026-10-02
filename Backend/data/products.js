@@ -1,0 +1,85 @@
+const products = [
+  {
+    name: "Nike Cortez Leather",
+    category: "Men's Shoes",
+    price: 7495,
+   images: [
+  "/media/images/cortez.jpg",
+  "/media/images/cortez-2.jpg",
+  "/media/images/cortez-3.jpg",
+  "/media/images/cortez-4.jpg",
+  "/media/images/cortez-5.jpg",
+  "/media/images/cortez-6.jpg",
+  "/media/images/cortez-7.jpg",
+  "/media/images/cortez-8.jpg",
+],
+    description: "Classic leather sneakers with a timeless design.",
+    colors: ["White"],
+    sizes: ["UK 6", "UK 7", "UK 8", "UK 9", "UK 10"],
+    gender: "Men",
+    stock: 20,
+  },
+
+  {
+    name: "Nike 24.7",
+    category: "Women's Shoes",
+    price: 12995,
+    images: ["/media/images/nike247.jpg"],
+    description: "Comfortable everyday shoes designed for all-day movement.",
+    colors: ["White"],
+    sizes: ["UK 3", "UK 4", "UK 5", "UK 6", "UK 7"],
+    gender: "Women",
+    stock: 15,
+  },
+
+  {
+    name: "Nike SB Janoski+ Slip",
+    category: "Skate Shoes",
+    price: 7495,
+    images: ["/media/images/janoski.jpg"],
+    description: "Low-profile skate shoes built for everyday comfort.",
+    colors: ["Black"],
+    sizes: ["UK 6", "UK 7", "UK 8", "UK 9", "UK 10"],
+    gender: "Men",
+    stock: 18,
+  },
+
+  {
+    name: "Nike Vomero 18",
+    category: "Women's Road Running Shoes",
+    price: 10636,
+    oldPrice: 13295,
+    images: ["/media/images/vomero.jpg"],
+    description: "Responsive cushioning for a smooth and comfortable run.",
+    colors: ["White"],
+    sizes: ["UK 3", "UK 4", "UK 5", "UK 6", "UK 7"],
+    gender: "Women",
+    stock: 12,
+  },
+
+  {
+    name: "Air Jordan Mule SE",
+    category: "Women's Mules",
+    price: 14995,
+    images: ["/media/images/jordan-mule.jpg"],
+    description: "Easy slip-on style with a bold Jordan look.",
+    colors: ["Black"],
+    sizes: ["UK 3", "UK 4", "UK 5", "UK 6", "UK 7"],
+    gender: "Women",
+    stock: 10,
+  },
+
+  {
+    name: "Nike Precision 8 MID",
+    category: "Men's Basketball Shoes",
+    price: 6295,
+    images: ["/media/images/precision.jpg"],
+    description: "Mid-top basketball shoes designed for quick movement.",
+    colors: ["Black"],
+    sizes: ["UK 6", "UK 7", "UK 8", "UK 9", "UK 10"],
+    gender: "Men",
+    stock: 14,
+  },
+];
+
+module.exports = products;

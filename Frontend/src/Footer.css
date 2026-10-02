@@ -1,0 +1,77 @@
+.footer {
+  padding: 0 60px 45px;
+}
+
+.footer-line {
+  height: 1px;
+  background: #ddd;
+  margin-bottom: 42px;
+}
+
+.footer-content {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  font-size: 15px;
+  color: #555;
+}
+
+.footer-content a {
+  color: #555;
+  text-decoration: none;
+}
+
+.footer-content a:hover {
+  color: #111;
+}
+
+
+/* =========================
+   TABLET
+========================= */
+
+@media (max-width: 900px) {
+  .footer {
+    padding: 0 30px 35px;
+  }
+
+  .footer-content {
+    gap: 20px;
+    font-size: 14px;
+    flex-wrap: wrap;
+  }
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 600px) {
+  .footer {
+    padding: 0 20px 30px;
+  }
+
+  .footer-content {
+    justify-content: center;
+    gap: 12px 18px;
+    font-size: 13px;
+    text-align: center;
+  }
+}
+
+
+/* =========================
+   SMALL MOBILE
+========================= */
+
+@media (max-width: 400px) {
+  .footer {
+    padding: 0 15px 25px;
+  }
+
+  .footer-content {
+    font-size: 12px;
+    gap: 10px 15px;
+  }
+}
